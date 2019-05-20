@@ -3,30 +3,30 @@ services:
   - docker
 
 before_install:
-  - docker build -t afenko/react-tests -f ./client/Dockerfile.dev ./client
+  - docker build -t stephengrider/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  docker run afenko/react-tests npm test -- --coverage
+  - docker run stephengrider/react-test npm test -- --coverage
 
 after_success:
-  - docker build -t afenko/multi-client ./client
-  - docker build -t afenko/multi-nginx ./nginx
-  - docker build -t afenko/multi-server ./server
-  - docker build -t afenko/multi-worker ./worker
-  # Log in to docker CLI
+  - docker build -t stephengrider/multi-client ./client
+  - docker build -t stephengrider/multi-nginx ./nginx
+  - docker build -t stephengrider/multi-server ./server
+  - docker build -t stephengrider/multi-worker ./worker
+  # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   # Take those images and push them to docker hub
-  - docker push afenko/multi-client
-  - docker push afenko/multi-nginx
-  - docker push afenko/multi-server
-  - docker push afenko/multi-worker
+  - docker push stephengrider/multi-client
+  - docker push stephengrider/multi-nginx
+  - docker push stephengrider/multi-server
+  - docker push stephengrider/multi-worker
 
 deploy:
   provider: elasticbeanstalk
-  region: eu-west-1
+  region: us-west-1
   app: multi-docker
   env: MultiDocker-env
-  bucket_name: elasticbeanstalk-eu-west-1-627388108652
+  bucket_name: elasticbeanstalk-us-west-1-306476627547
   bucket_path: docker-multi
   on:
     branch: master
